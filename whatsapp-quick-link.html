@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Quick Link - Christian</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .whatsapp-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #25D366;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 16px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .button:hover {
+            background: #20BA5A;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .recent-numbers {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .recent-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .recent-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .recent-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .recent-number {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .recent-time {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .clear-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:hover {
+            background: #c82333;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="whatsapp-icon">💬</div>
+            <h1>WhatsApp Quick Link</h1>
+            <p class="subtitle">Generá links de WhatsApp al instante</p>
+        </div>
+
+        <form id="whatsappForm">
+            <div class="input-group">
+                <label for="phoneNumber">Número de Teléfono</label>
+                <input 
+                    type="tel" 
+                    id="phoneNumber" 
+                    placeholder="Ej: 5491112345678"
+                    autocomplete="off"
+                    required
+                >
+                <p class="hint">Formato: Código país + Código área + Número (sin espacios, guiones ni 0 inicial)</p>
+            </div>
+
+            <div class="input-group">
+                <label for="message">Mensaje Inicial (Opcional)</label>
+                <input 
+                    type="text" 
+                    id="message" 
+                    placeholder="Ej: Hola! Soy Christian de OSDE..."
+                    autocomplete="off"
+                >
+                <p class="hint">Este mensaje aparecerá pre-cargado en el chat</p>
+            </div>
+
+            <button type="submit" class="button">
+                <span>🚀</span>
+                <span>Abrir Chat de WhatsApp</span>
+            </button>
+        </form>
+
+        <div class="recent-numbers" id="recentSection" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span class="recent-title">📋 Números Recientes</span>
+                <button class="clear-btn" onclick="clearRecent()">Limpiar</button>
+            </div>
+            <div id="recentList"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function loadRecent() {
+            const recent = JSON.parse(localStorage.getItem('recentNumbers') || '[]');
+            const recentSection = document.getElementById('recentSection');
+            const recentList = document.getElementById('recentList');
+
+            if (recent.length > 0) {
+                recentSection.style.display = 'block';
+                recentList.innerHTML = recent.map(item => `
+                    <div class="recent-item" onclick="useNumber('${item.number}', '${item.message || ''}')">
+                        <span class="recent-number">${formatNumber(item.number)}</span>
+                        <span class="recent-time">${getTimeAgo(item.timestamp)}</span>
+                    </div>
+                `).join('');
+            } else {
+                recentSection.style.display = 'none';
+            }
+        }
+
+        function formatNumber(number) {
+            if (number.startsWith('549')) {
+                return `+54 9 ${number.substring(3, 5)} ${number.substring(5)}`;
+            }
+            return `+${number}`;
+        }
+
+        function getTimeAgo(timestamp) {
+            const minutes = Math.floor((Date.now() - timestamp) / 60000);
+            if (minutes < 1) return 'Ahora';
+            if (minutes < 60) return `Hace ${minutes}min`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `Hace ${hours}h`;
+            return `Hace ${Math.floor(hours / 24)}d`;
+        }
+
+        function useNumber(number, message) {
+            document.getElementById('phoneNumber').value = number;
+            document.getElementById('message').value = message || '';
+            showToast('Número cargado! 👍');
+        }
+
+        function saveRecent(number, message) {
+            let recent = JSON.parse(localStorage.getItem('recentNumbers') || '[]');
+            recent = recent.filter(item => item.number !== number);
+            recent.unshift({
+                number: number,
+                message: message,
+                timestamp: Date.now()
+            });
+            recent = recent.slice(0, 5);
+            localStorage.setItem('recentNumbers', JSON.stringify(recent));
+            loadRecent();
+        }
+
+        function clearRecent() {
+            localStorage.removeItem('recentNumbers');
+            loadRecent();
+            showToast('Números recientes eliminados 🗑️');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        document.getElementById('whatsappForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            phoneNumber = phoneNumber.replace(/[\s\-\(\)]/g, '');
+            
+            if (!/^\+?\d+$/.test(phoneNumber)) {
+                showToast('❌ El número solo debe contener dígitos');
+                return;
+            }
+            
+            phoneNumber = phoneNumber.replace('+', '');
+            
+            if (phoneNumber.length < 10) {
+                showToast('❌ El número parece muy corto');
+                return;
+            }
+            
+            let url = `https://wa.me/${phoneNumber}`;
+            
+            if (message) {
+                url += `?text=${encodeURIComponent(message)}`;
+            }
+            
+            saveRecent(phoneNumber, message);
+            window.open(url, '_blank');
+            showToast('✅ Abriendo WhatsApp...');
+        });
+
+        loadRecent();
+
+        function cleanOldRecent() {
+            let recent = JSON.parse(localStorage.getItem('recentNumbers') || '[]');
+            const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+            recent = recent.filter(item => item.timestamp > sevenDaysAgo);
+            localStorage.setItem('recentNumbers', JSON.stringify(recent));
+        }
+        cleanOldRecent();
+    </script>
+</body>
+</html>

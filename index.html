@@ -228,10 +228,16 @@
                 <p class="hint">Este mensaje aparecerá pre-cargado en el chat</p>
             </div>
 
-            <button type="submit" class="button">
-                <span>🚀</span>
-                <span>Abrir Chat de WhatsApp</span>
-            </button>
+            <div style="display: flex; gap: 10px; flex-direction: column;">
+                <button type="button" class="button" style="background: #6b7280;" onclick="copyNumber()">
+                    <span>📋</span>
+                    <span>Copiar Número</span>
+                </button>
+                <button type="submit" class="button">
+                    <span>💬</span>
+                    <span>Abrir WhatsApp</span>
+                </button>
+            </div>
         </form>
 
         <div class="recent-numbers" id="recentSection" style="display: none;">
@@ -312,6 +318,62 @@
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+
+        function copyNumber() {
+            let phoneNumber = document.getElementById('phoneNumber').value.trim();
+            
+            if (!phoneNumber) {
+                showToast('❌ Por favor ingresá un número primero');
+                return;
+            }
+            
+            // Limpiar número
+            phoneNumber = phoneNumber.replace(/[\s\-\(\)]/g, '');
+            
+            // Validar
+            if (!/^\+?\d+$/.test(phoneNumber)) {
+                showToast('❌ El número solo debe contener dígitos');
+                return;
+            }
+            
+            // Quitar el + si existe
+            phoneNumber = phoneNumber.replace('+', '');
+            
+            // Validar longitud mínima
+            if (phoneNumber.length < 10) {
+                showToast('❌ El número parece muy corto');
+                return;
+            }
+            
+            // Copiar al portapapeles
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(phoneNumber).then(() => {
+                    showToast('✅ Número copiado: ' + phoneNumber);
+                }).catch(() => {
+                    fallbackCopy(phoneNumber);
+                });
+            } else {
+                fallbackCopy(phoneNumber);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showToast('✅ Número copiado: ' + text);
+            } catch (err) {
+                showToast('❌ Error al copiar. Copiá manualmente: ' + text);
+            }
+            
+            document.body.removeChild(textarea);
         }
 
         document.getElementById('whatsappForm').addEventListener('submit', function(e) {
